@@ -47,73 +47,76 @@
             dataType: "json",
             data: params, //JSON.stringify(params),
             success: function (d) {
-                if (d.numFound == 0) {
-                    $('#msgError').show();
-                    $('#tblResultado').hide();
-                    $('#paginacion').hide();
-                    $('#lblTotal').hide();
-                } else {
-                    if (d.numFound == "1")
-                        $('#lblTotal').html("1 registro encontrado");
-                    else
-                        $('#lblTotal').html(d.numFound + " registros encontrados");
-
-                    $('#tablaBody').html("");
-                    $('#tblResultado').show();
-                    $('#lblTotal').show();
-                    for (var i = 0; i < d.docs.length; i++) {
-                        var f = "";
-                        var r = "<td>";
-                        try {
-                            f = d.docs[i].Fecha.substring(0, 10);
-                            f = f.substring(8, 10) + "-" + f.substring(5, 7) + "-" + f.substring(0, 4);
-                            if (f == "01-01-3000")
-                                r += "";
-                            else
-                                r += f + " - ";
-                        } catch (e) {
-                            r += "";
-                        }
-                        r += "<strong>" + d.docs[i].Norma + "</strong>.- ";
-
-                        if (d.docs[i].Numero) {
-                            r += "Número " + d.docs[i].Numero + ".- ";
-                        } else {
-                            if (d.docs[i].Articulo) {
-                                r += "Artículo número " + d.docs[i].Articulo;
-                            }
-                            if (d.docs[i].Inciso) {
-                                if (d.docs[i].Articulo)
-                                    r += ", ";
-                                r += "Inciso " + d.docs[i].Inciso
-                            }
-                            r += ".- ";
-                        }                        
-
-                        r += d.docs[i].Titulo;
-                        r += "<br /><strong>Id documento: </strong>" + d.docs[i].id;
-                        r += "</td>"
-
-                        r += "<td>";
-                        r += "<a class=\"text-blue\" href=\"/Document/Ma_VerDocumento/" + d.docs[i].id + "\" >Ver</a>";
-                        r += "</td>";
-                        if (referencia == "True") {
-                            r += "<td></td>";
-                        } else {
-                            r += "<td>";
-                            r += "<a class=\"text-green\" href=\"/Document/Ma_EditarDocumento/" + d.docs[i].id + "\" target=\"_blank\">Editar</a>";
-                            r += "</td>";
-                        }
-
-                        $('#tablaBody').append("<tr>" + r + "</tr>")
-                    }
-                    if (d.numFound <= 10) {
+                if (d.MensajeError == null) {
+                    if (d.numFound == 0) {
+                        $('#msgError').show();
+                        $('#tblResultado').hide();
                         $('#paginacion').hide();
+                        $('#lblTotal').hide();
                     } else {
-                        $('#paginacion').show();
-                        paginacion(d.numFound, p_);
-                    }
+                        if (d.numFound == "1")
+                            $('#lblTotal').html("1 registro encontrado");
+                        else
+                            $('#lblTotal').html(d.numFound + " registros encontrados");
 
+                        $('#tablaBody').html("");
+                        $('#tblResultado').show();
+                        $('#lblTotal').show();
+                        for (var i = 0; i < d.docs.length; i++) {
+                            var f = "";
+                            var r = "<td>";
+                            try {
+                                f = d.docs[i].Fecha.substring(0, 10);
+                                f = f.substring(8, 10) + "-" + f.substring(5, 7) + "-" + f.substring(0, 4);
+                                if (f == "01-01-3000")
+                                    r += "";
+                                else
+                                    r += f + " - ";
+                            } catch (e) {
+                                r += "";
+                            }
+                            r += "<strong>" + d.docs[i].Norma + "</strong>.- ";
+
+                            if (d.docs[i].Numero) {
+                                r += "Número " + d.docs[i].Numero + ".- ";
+                            } else {
+                                if (d.docs[i].Articulo) {
+                                    r += "Artículo número " + d.docs[i].Articulo;
+                                }
+                                if (d.docs[i].Inciso) {
+                                    if (d.docs[i].Articulo)
+                                        r += ", ";
+                                    r += "Inciso " + d.docs[i].Inciso
+                                }
+                                r += ".- ";
+                            }
+
+                            r += d.docs[i].Titulo;
+                            r += "<br /><strong>Id documento: </strong>" + d.docs[i].id;
+                            r += "</td>"
+
+                            r += "<td>";
+                            r += "<a class=\"text-blue\" href=\"/Document/Ma_VerDocumento/" + d.docs[i].id + "\" >Ver</a>";
+                            r += "</td>";
+                            if (referencia == "True") {
+                                r += "<td></td>";
+                            } else {
+                                r += "<td>";
+                                r += "<a class=\"text-green\" href=\"/Document/Ma_EditarDocumento/" + d.docs[i].id + "\" target=\"_blank\">Editar</a>";
+                                r += "</td>";
+                            }
+
+                            $('#tablaBody').append("<tr>" + r + "</tr>")
+                        }
+                        if (d.numFound <= 10) {
+                            $('#paginacion').hide();
+                        } else {
+                            $('#paginacion').show();
+                            paginacion(d.numFound, p_);
+                        }
+                    }
+                }else {
+                    alert(d.MensajeError);
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
