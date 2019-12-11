@@ -633,7 +633,6 @@ namespace GestorDocumentos.Controllers
                 sgd_documentoEntity d = SolrBO.getDocumentoById(id);
 
                 string Norma = (d.Norma).Replace(" ", "_") + "\\";
-
                 bool esBorrador = false;
                 if (System.IO.File.Exists(directorio_ma + Norma + d.IdDocumento + "_borrador.xml"))
                     esBorrador = true;
@@ -707,7 +706,7 @@ namespace GestorDocumentos.Controllers
         }
 
         [HttpPost]
-        public ActionResult Ma_EditarDocumento(sgd_documentoEntity ma)
+        public ActionResult Ma_EditarDocumento(Documento ma)
         {
             try
             {
@@ -890,14 +889,14 @@ namespace GestorDocumentos.Controllers
 
         }
 
-        private bool guardaArchivo(string ruta, sgd_documentoEntity doc)
+        private bool guardaArchivo(string ruta, Documento doc)
         {
             string xml = FileBo.SerializeXML(doc);
             FileBo.setXmlStringToFile(ruta, xml);
             return true;
         }
 
-        private bool Ma_SendSorl(sgd_documentoEntity ma, bool nuevo)
+        private bool Ma_SendSorl(Documento ma, bool nuevo)
         {
             ma.Texto = Regex.Replace(ma.Texto, "[<].*?>", " ");
             ma.Texto = Regex.Replace(ma.Texto, @"\s+", " ");
