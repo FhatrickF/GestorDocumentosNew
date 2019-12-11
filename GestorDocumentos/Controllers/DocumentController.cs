@@ -567,6 +567,7 @@ namespace GestorDocumentos.Controllers
 
         public ActionResult Ma_VerDocumento(string id)
         {
+            Documento documento = new Documento();
             sgd_documentoEntity ma = new sgd_documentoEntity();
             sgd_documentoEntity docR = new sgd_documentoEntity();
             string rutaDoc = "";
@@ -685,22 +686,41 @@ namespace GestorDocumentos.Controllers
                     ViewBag.Links = links;
                     #endregion
 
-                    return View(ma);
+                    #region transformar doc
+
+                    documento.id = ma.id;
+                    documento.Iddo = ma.Iddo;
+                    documento.IdDocumento = ma.IdDocumento;
+                    documento.IdRep = ma.IdRep;
+                    documento.Inciso = ma.Inciso;
+                    documento.Links = ma.Links;
+                    documento.id = ma.id;
+                    documento.id = ma.id;
+                    documento.id = ma.id;
+                    documento.id = ma.id;
+                    documento.id = ma.id;
+                    documento.id = ma.id;
+                    documento.id = ma.id;
+
+                    #endregion
+
+                    return View(documento);
                 }
                 else
                 {
-                    throw new Exception("No se pudo encontrar el documento. Contáctese con el administrador");
+                    throw new BusinessException("No se pudo encontrar el xml del documento. Contáctese con el administrador");
                 }
             }
             catch (BusinessException ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return View(ma);
+                ModelState.AddModelError("Error", ex.Message);
+                return View(documento);
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return View(ma);
+                ModelState.AddModelError("Error", "No se encontro el xml del documento por favor verificar o comunicarse con el administrador.");
+                new TechnicalException("Error al ver documento, id :" + id, ex);
+                return View(documento);
             }
         }
 

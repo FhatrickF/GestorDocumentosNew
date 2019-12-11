@@ -234,9 +234,30 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
         </aside>
         <!-- /.control-sidebar -->
-        <!-- Add the sidebar's background. This div must be placed
-        immediately after the control sidebar -->
+        <!-- Add the sidebar's background. This div must be placed immediately after the control sidebar -->
         <div class="control-sidebar-bg"></div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="ModalError" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Error</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p id="txtModalMensaje">Some text in the modal.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="~/Busqueda/Index" class="btn btn-default" data-dismiss="modal">Salir</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- Fin Modal -->
     </div>
 
     <!-- ./wrapper -->
