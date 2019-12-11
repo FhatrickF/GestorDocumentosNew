@@ -1,4 +1,5 @@
-﻿using GestorDocumentosBusiness;
+﻿using GestorDocumentos.Models.Document;
+using GestorDocumentosBusiness;
 using GestorDocumentosEntities;
 using GestorDocumentosExceptions;
 using GestorDocumentosUtilities;
@@ -567,7 +568,7 @@ namespace GestorDocumentos.Controllers
 
         public ActionResult Ma_VerDocumento(string id)
         {
-            Documento documento = new Documento();
+            Documento d = new Documento();
             sgd_documentoEntity ma = new sgd_documentoEntity();
             sgd_documentoEntity docR = new sgd_documentoEntity();
             string rutaDoc = "";
@@ -588,69 +589,9 @@ namespace GestorDocumentos.Controllers
                 }
                 catch (Exception ex)
                 { }
-                Documento d = new Documento();
                 sgd_documentoEntity _DocumentoEntity = SolrBO.getDocumentoById(id); // SolrBO.SolrQueryById(id);
 
-                d.Anio = _DocumentoEntity.Anio;
-                d.AnioC = _DocumentoEntity.AnioC;
-                d.Apendice = _DocumentoEntity.Apendice;
-                d.AplicaArticulo = _DocumentoEntity.AplicaArticulo;
-                d.AplicaNorma = _DocumentoEntity.AplicaNorma;
-                d.AplicaNumero = _DocumentoEntity.AplicaNumero;
-                d.Articulo = _DocumentoEntity.Articulo;
-                d.Categoria = _DocumentoEntity.Categoria;
-                d.Coleccion = _DocumentoEntity.Coleccion;
-                d.Comentario = _DocumentoEntity.Comentario;
-                d.Cve = _DocumentoEntity.Cve;
-                d.Descripcion = _DocumentoEntity.Descripcion;
-                d.EsBorrador = _DocumentoEntity.EsBorrador;
-                d.Fecha = _DocumentoEntity.Fecha;
-                d.FechaCreacion = _DocumentoEntity.FechaCreacion;
-                d.id = _DocumentoEntity.id;
-                d.Iddo = _DocumentoEntity.Iddo;
-                d.IdDocumento = _DocumentoEntity.IdDocumento;
-                d.IdRep = _DocumentoEntity.IdRep;
-                d.Inciso = _DocumentoEntity.Inciso;
-
-                List<Link> ls = new List<Link>();
-                foreach (var item in _DocumentoEntity.Links)
-                {
-                    Link l = new Link();
-                    l.Texto = item.Texto;
-                    l.Tipo = item.Tipo;
-                    l.Url = item.Url;
-                    ls.Add(l);
-                }
-                d.Links = ls;
-                d.Minred = _DocumentoEntity.Minred;
-                d.Nompop = _DocumentoEntity.Nompop;
-                d.Norma = _DocumentoEntity.Cve;
-                d.Numero = _DocumentoEntity.Cve;
-                d.Orden = _DocumentoEntity.Orden;
-                d.Organismo = _DocumentoEntity.Organismo;
-                d.OrganismoUno = _DocumentoEntity.OrganismoUno;
-                d.Regco = _DocumentoEntity.Regco;
-                d.Resuel = _DocumentoEntity.Resuel;
-                d.Rol = _DocumentoEntity.Rol;
-                d.Seccion = _DocumentoEntity.Seccion;
-                d.Suborganismo = _DocumentoEntity.Suborganismo;
-                d.Tema = _DocumentoEntity.Tema;
-                d.Temas = _DocumentoEntity.Temas;
-                d.Texto = _DocumentoEntity.Texto;
-                d.Titulo = _DocumentoEntity.Titulo;
-                d.Version = _DocumentoEntity.Version;
-
-                List<VersionesDocumento> versiones = new List<VersionesDocumento>();
-                foreach (var item in _DocumentoEntity.Versiones)
-                {
-                    VersionesDocumento vr = new VersionesDocumento();
-                    vr.id = item.id;
-                    vr.nombre = item.nombre;
-                    versiones.Add(vr);
-                }
-
-                d.Versiones = versiones;
-                d.VersionFinal = _DocumentoEntity.VersionFinal;
+                d = UpdateDocumento.updateDoc(_DocumentoEntity);
 
 
                 string Norma = (d.Norma).Replace(" ", "_") + "\\";
@@ -661,50 +602,9 @@ namespace GestorDocumentos.Controllers
 
                     ma = (sgd_documentoEntity)FileBo.DeserializeXML(ma.GetType(), xml);
 
-                    #region links
-                    List<LinkEntity> links = new List<LinkEntity>();
-                    if (ma.Links != null && ma.Links.Count > 0)
-                    {
+                    d = UpdateDocumento.updateDoc(ma);
 
-                        foreach (LinkEntity l in ma.Links)
-                        {
-                            LinkEntity link = new LinkEntity();
-                            link.Texto = l.Texto;
-                            ViewBag.Aplica = "";
-                            link.Tipo = l.Tipo;
-                            link.Url = l.Url;
-                            links.Add(link);
-                        }
-                        ma.Links = null;
-                    }
-                    else
-                    {
-                        LinkEntity link = new LinkEntity();
-                        link.Tipo = "El documento no contiene links";
-                        links.Add(link);
-                    }
-                    ViewBag.Links = links;
-                    #endregion
-
-                    #region transformar doc
-
-                    documento.id = ma.id;
-                    documento.Iddo = ma.Iddo;
-                    documento.IdDocumento = ma.IdDocumento;
-                    documento.IdRep = ma.IdRep;
-                    documento.Inciso = ma.Inciso;
-                    documento.Links = ma.Links;
-                    documento.id = ma.id;
-                    documento.id = ma.id;
-                    documento.id = ma.id;
-                    documento.id = ma.id;
-                    documento.id = ma.id;
-                    documento.id = ma.id;
-                    documento.id = ma.id;
-
-                    #endregion
-
-                    return View(documento);
+                    return View(d);
                 }
                 else
                 {
@@ -714,13 +614,13 @@ namespace GestorDocumentos.Controllers
             catch (BusinessException ex)
             {
                 ModelState.AddModelError("Error", ex.Message);
-                return View(documento);
+                return View(d);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Error", "No se encontro el xml del documento por favor verificar o comunicarse con el administrador.");
                 new TechnicalException("Error al ver documento, id :" + id, ex);
-                return View(documento);
+                return View(d);
             }
         }
 
